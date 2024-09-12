@@ -1,0 +1,134 @@
+<div class="container mt-5">
+    <div class="row">
+      <div class="col-md-6 offset-md-3">
+        <h3>See Employees by Department</h3>
+        <select class="form-control" [(ngModel)]="departmentId" (change)="onDepartmentChange()">
+          <option value="" disabled selected>Select a department</option>
+          <option *ngFor="let department of departments" [value]="department.id">
+            {{ department.name }}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-12 mt-3">
+        <button mat-raised-button color="primary" (click)="openAddDepartmentModal()">Add Department</button>
+        <button mat-raised-button color="primary" (click)="openAddEmployeeModal()">Add Employee</button>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-12">
+        <table mat-table [dataSource]="paginatedEmployees" class="mat-elevation-z8">
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Email</th>
+            <td mat-cell *matCellDef="let employee">{{ employee.name }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let employee">{{ employee.email }}</td>
+          </ng-container>
+  
+          <ng-container matColumnDef="position">
+            <th mat-header-cell *matHeaderCellDef>Position</th>
+            <td mat-cell *matCellDef="let employee">{{ employee.position }}</td>
+          </ng-container>
+  
+          <ng-container matColumnDef="salary">
+            <th mat-header-cell *matHeaderCellDef>Salary</th>
+            <td mat-cell *matCellDef="let employee">{{ employee.salary | currency }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="departmentName">
+            <th mat-header-cell *matHeaderCellDef>Department Name</th>
+            <td mat-cell *matCellDef="let employee">{{ employee.departmentName }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let employee">
+              <button mat-raised-button color="primary" (click)="openViewEmployeeModal(employee)">View</button>
+              <button mat-raised-button color="warn" (click)="confirmDeleteEmployee(employee)">Delete</button>
+            </td>
+          </ng-container>
+  
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        <mat-paginator [length]="employees.length" [pageSize]="pageSize" (page)="onPageChange($event)">
+        </mat-paginator>
+      </div>
+    </div>
+
+<ng-template #addDepartmentModal>
+  <div class="modal-overlay">
+    <div class="add-department-modal">
+      <h2>Add Department</h2>
+      <form>
+        <div class="form-group">
+          <label for="department-name">Department Name</label>
+          <input id="department-name" class="form-control" [(ngModel)]="newDepartment.name" name="name" />
+        </div>
+        <div class="form-group">
+          <label for="department-location">Location</label>
+          <input id="department-location" class="form-control" [(ngModel)]="newDepartment.location" name="location" />
+        </div>
+      </form>
+      <div class="modal-actions">
+        <button mat-button (click)="closeAddDepartmentModal()">Cancel</button>
+        <button mat-raised-button (click)="addDepartment(newDepartment)">Add</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<ng-template #addEmployeeModal>
+  <div class="modal-overlay">
+    <div class="add-employee-modal">
+      <h2>{{isViewing ? 'View Employee' : 'Add Employee'}}</h2>
+      <form>
+        <div class="form-group">
+          <label for="employee-name">Name</label>
+          <input id="employee-name" class="form-control" [(ngModel)]="selectedEmployee.name" name="name" [disabled]="isViewing"/>
+        </div>
+        <div class="form-group">
+          <label for="employee-email">Email</label>
+          <input id="employee-email" class="form-control" [(ngModel)]="selectedEmployee.email" name="email" [disabled]="isViewing"/>
+        </div>
+        <div class="form-group">
+          <label for="employee-position">Position</label>
+          <input id="employee-position" class="form-control" [(ngModel)]="selectedEmployee.position" name="position"/>
+        </div>
+        <div class="form-group">
+          <label for="employee-salary">Salary</label>
+          <input id="employee-salary" type="number" class="form-control" [(ngModel)]="selectedEmployee.salary" name="salary"/>
+        </div>
+        <div class="form-group">
+          <label for="employee-department">Department</label>
+          <select id="employee-department" class="form-control" [(ngModel)]="selectedEmployee.departmentId" name="departmentId">
+            <option *ngFor="let department of departments" [value]="department.id">
+              {{ department.name }}
+            </option>
+          </select>
+        </div>
+      </form>
+      <div class="modal-actions">
+        <button mat-button (click)="closeAddEmployeeModal()">Cancel</button>
+        <button mat-raised-button (click)="addEmployee(selectedEmployee)">{{ isViewing ? 'Update' : 'Add' }}</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #deleteConfirmationModal>
+  <div class="modal-overlay">
+    <div class="add-employee-modal">
+      <h2>Confirm Delete</h2>
+      <p>Are you sure you want to delete this employee?</p>
+      <div class="modal-actions">
+        <button mat-button (click)="closeDeleteConfirmationModal()">Cancel</button>
+        <button mat-raised-button color="warn" (click)="deleteEmployee()">Delete</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+  </div>
+  
